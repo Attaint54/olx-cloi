@@ -69,7 +69,7 @@ export default function ProductCard({ product }) {
           <span className="product-card-location">
             <i className="fa-solid fa-location-dot"></i> {product.location}
           </span>
-          <span className="product-card-date">{product.date}</span>
+          <span className="product-card-date">{product.date || 'Today'}</span>
         </div>
       </div>
     </div>
