@@ -116,7 +116,7 @@ ul {
 
 .btn-primary {
   background-color: var(--primary-brand);
-  color: white;
+  color: rgb(241, 225, 225);
 }
 
 .btn-primary:hover {
