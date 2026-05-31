@@ -8,7 +8,7 @@ import { useAppContext } from '../context/AppContext';
 export default function HeaderClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, logoutUser, openAuthModal, openSellModal } = useAppContext();
+  const { user, logoutUser, openAuthModal, openSellModal, theme, toggleTheme } = useAppContext();
 
   const [searchVal, setSearchVal] = useState('');
   const [locationVal, setLocationVal] = useState('New York, NY');
@@ -93,6 +93,10 @@ export default function HeaderClient() {
               Login
             </button>
           )}
+
+          <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
+            <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+          </button>
 
           <button className="btn btn-sell" onClick={openSellModal}>
             <i className="fa-solid fa-plus"></i> SELL

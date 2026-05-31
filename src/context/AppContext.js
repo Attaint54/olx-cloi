@@ -13,6 +13,23 @@ export function AppProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('New York, NY');
+  const [theme, setTheme] = useState('light');
+
+  // Init theme from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('olx_theme');
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('olx_theme', next);
+  };
 
   // Load session on startup
   useEffect(() => {
@@ -40,6 +57,10 @@ export function AppProvider({ children }) {
   };
   const closeAuthModal = () => setAuthModal({ isOpen: false, defaultTab: 'login' });
 
+  // Refresh trigger for product list
+  const [refreshProducts, setRefreshProducts] = useState(0);
+  const incrementRefreshProducts = () => setRefreshProducts(prev => prev + 1);
+
   // Sell Modal Controls
   const openSellModal = () => {
     if (!user) {
@@ -59,8 +80,8 @@ export function AppProvider({ children }) {
     closeAuthModal();
   };
 
-  const registerUser = async (name, username, email, password) => {
-    const registeredUser = await OLX_Auth.register(name, username, email, password);
+  const registerUser = async (name, username, email, password, profilePicFile = null) => {
+    const registeredUser = await OLX_Auth.register(name, username, email, password, profilePicFile);
     setUser(registeredUser);
     showToast(`Account registered. Welcome, ${registeredUser.name}!`, 'success');
     closeAuthModal();
@@ -84,10 +105,13 @@ export function AppProvider({ children }) {
         setSearchQuery,
         setLocation,
         showToast,
+        refreshProducts,
+        theme, toggleTheme,
         openAuthModal,
         closeAuthModal,
         openSellModal,
         closeSellModal,
+        incrementRefreshProducts,
         loginUser,
         registerUser,
         logoutUser,

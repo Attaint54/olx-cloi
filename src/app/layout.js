@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import AuthModal from '../components/AuthModal';
 import SellModal from '../components/SellModal';
 import ToastContainer from '../components/Toast';
+import AnimatedCursor from 'react-animated-cursor';
 
 export const metadata = {
   title: 'OLX - Buy and Sell Cars, Mobile Phones, Jobs, Home, & More',
@@ -34,6 +35,17 @@ export default function RootLayout({ children }) {
           </div>
           
           {/* Overlay components */}
+          <AnimatedCursor
+            innerSize={8}
+            outerSize={32}
+            color="0, 162, 154"
+            outerAlpha={0.15}
+            innerScale={0.7}
+            outerScale={4}
+            trailingSpeed={6}
+            clickables={['a', 'button', 'input', 'select', 'textarea', '.btn', '.category-bubble']}
+            outerStyle={{ border: '2px solid rgba(0, 162, 154, 0.6)' }}
+          />
           <AuthModal />
           <SellModal />
           <ToastContainer />

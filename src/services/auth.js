@@ -14,25 +14,24 @@ export function getSavedSession() {
 
 export const OLX_Auth = {
   /**
-   * Logs in a user using the DummyJSON authentication route
+   * Logs in a user via backend
    */
   async login(username, password) {
     try {
-      const response = await axios.post('https://dummyjson.com/auth/login', {
+      const response = await axios.post('http://localhost:3000/login', {
         username,
         password,
-        expiresInMins: 60
       }, {
         headers: { 'Content-Type': 'application/json' }
       });
 
       const data = response.data;
       const user = {
-        id: data.id,
-        username: data.username,
-        email: data.email,
-        name: `${data.firstName} ${data.lastName}`,
-        avatar: data.image || `https://api.dicebear.com/7.x/adventurer/svg?seed=${data.username}`,
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        name: data.user.name,
+        avatar: data.user.profilePicture || '',
         token: data.token
       };
 
@@ -42,31 +41,47 @@ export const OLX_Auth = {
       return user;
     } catch (error) {
       console.error('Auth Service Login Error:', error);
-      const errMsg = error.response?.data?.message || 'Invalid username or password';
+      const errMsg = error.response?.data?.error || 'Invalid username or password';
       throw new Error(errMsg);
     }
   },
 
   /**
-   * Simulates user registration
+   * Registers user via backend with Cloudinary image upload
    */
-  async register(name, username, email, password) {
-    // Simulate endpoint roundtrip delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    const user = {
-      id: `usr_${Date.now()}`,
-      username,
-      email,
-      name,
-      avatar: `https://api.dicebear.com/7.x/adventurer/svg?seed=${username}`,
-      token: 'mock-jwt-token-' + Math.random().toString(36).substring(2)
-    };
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('olx_user_session', JSON.stringify(user));
+  async register(name, username, email, password, profilePicFile = null) {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('password', password);
+    if (profilePicFile) {
+      formData.append('image', profilePicFile);
     }
-    return user;
+
+    try {
+      const response = await axios.post('http://localhost:3000/register', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const data = response.data;
+      const user = {
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        name: data.user.name,
+        avatar: data.user.profilePicture || '',
+        token: data.token
+      };
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('olx_user_session', JSON.stringify(user));
+      }
+      return user;
+    } catch (error) {
+      console.error('Register error:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.error || error.message);
+    }
   },
 
   /**

@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 import { OLX_API } from '../services/api';
 
 export default function SellModal({ onProductAdded }) {
-  const { sellModal, closeSellModal, showToast, user } = useAppContext();
+  const { sellModal, closeSellModal, showToast, user, incrementRefreshProducts } = useAppContext();
 
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
@@ -46,9 +46,7 @@ export default function SellModal({ onProductAdded }) {
       
       closeSellModal();
       
-      if (onProductAdded) {
-        onProductAdded();
-      }
+      incrementRefreshProducts();
     } catch (error) {
       console.error(error);
       showToast('Failed to create listing. Please try again.', 'error');

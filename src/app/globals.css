@@ -44,6 +44,284 @@
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark Mode */
+[data-theme="dark"] {
+  --primary-brand: #00a29a;
+  --primary-brand-light: #0dcfc4;
+  --primary-brand-accent: #00c4b8;
+  --text-main: #e8edee;
+  --text-muted: #9aafb2;
+  --text-light: #7a8f92;
+  --bg-main: #0f1a1c;
+  --bg-card: #1a2a2e;
+  --bg-input: #1a2a2e;
+  --border-color: #2a3d42;
+  --border-focus: #00a29a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] #main-header {
+  background-color: var(--bg-card);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .header-main-nav {
+  background-color: var(--bg-card);
+}
+
+[data-theme="dark"] .search-bar-wrapper input {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .search-bar-wrapper input:focus {
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .location-picker {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .search-btn {
+  background-color: var(--primary-brand-accent);
+  color: #0f1a1c;
+}
+
+[data-theme="dark"] .hero-banner {
+  background: linear-gradient(135deg, #0f1a1c 0%, #1a2a2e 100%);
+}
+
+[data-theme="dark"] .hero-text h1,
+[data-theme="dark"] .hero-text p {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: var(--primary-brand);
+  color: #0f1a1c;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: var(--primary-brand-light);
+}
+
+[data-theme="dark"] .btn-secondary {
+  color: var(--text-main);
+  border-color: var(--text-muted);
+}
+
+[data-theme="dark"] .btn-sell {
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .filters-sidebar {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .filter-section {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .filter-title {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .price-range-inputs input {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .price-range-inputs input:focus {
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .products-grid .product-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .product-card-body {
+  background-color: var(--bg-card);
+}
+
+[data-theme="dark"] .product-title,
+[data-theme="dark"] .product-price,
+[data-theme="dark"] .product-location,
+[data-theme="dark"] .product-date,
+[data-theme="dark"] .product-category {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .skeleton-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .skeleton-img,
+[data-theme="dark"] .skeleton-text {
+  background: linear-gradient(90deg, var(--bg-input) 25%, #2a3d42 50%, var(--bg-input) 75%);
+}
+
+[data-theme="dark"] .quick-categories {
+  background-color: transparent;
+}
+
+[data-theme="dark"] .category-bubble {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .category-bubble:hover {
+  border-color: var(--primary-brand-accent);
+  background-color: rgba(0, 162, 154, 0.1);
+}
+
+[data-theme="dark"] .results-count,
+[data-theme="dark"] .sort-select select {
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-content {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .auth-tab-btn {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .auth-tab-btn.active {
+  color: var(--primary-brand-accent);
+  border-bottom-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .close-modal-btn {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .input-icon-wrapper input,
+[data-theme="dark"] .file-input-wrapper {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .input-icon-wrapper input:focus,
+[data-theme="dark"] .file-input-wrapper:hover {
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .form-group label,
+[data-theme="dark"] .helper-text,
+[data-theme="dark"] .auth-subtitle,
+[data-theme="dark"] .modal-subtitle {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .user-dropdown {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] .user-dropdown-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .user-dropdown-header .name,
+[data-theme="dark"] .user-dropdown-header .email {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .logout-btn {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .logout-btn:hover {
+  background-color: rgba(0, 162, 154, 0.1);
+}
+
+[data-theme="dark"] .toast {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="dark"] #main-footer {
+  background-color: var(--bg-card);
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .footer-column h5 {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .footer-column a {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .footer-column a:hover {
+  color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .footer-bottom {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .footer-bottom-content {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus {
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--primary-brand-accent);
+}
+
+/* ==========================================================================
+   CUSTOM CURSOR (react-animated-cursor override)
+   ========================================================================== */
+.react-animated-cursor {
+  z-index: 99999 !important;
+}
+
 /* ==========================================================================
    BASE & RESET
    ========================================================================== */
@@ -54,6 +332,7 @@
 }
 
 html, body {
+  cursor: none;
   font-family: var(--font-body);
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -61,6 +340,10 @@ html, body {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   min-height: 100vh;
+}
+
+button, a, input, select, textarea, .btn {
+  cursor: none;
 }
 
 button, input, select, textarea {
@@ -116,12 +399,17 @@ ul {
 
 .btn-primary {
   background-color: var(--primary-brand);
-  color: rgb(241, 225, 225);
+  color: #fff;
 }
 
 .btn-primary:hover {
   background-color: var(--primary-brand-light);
   border-color: var(--primary-brand-light);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -1294,47 +1582,13 @@ ul {
 }
 
 /* Form Styles */
-.auth-form.hidden {
-  display: none;
-}
-
-.form-group {
-  margin-bottom: 18px;
-  position: relative;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: var(--primary-brand);
-}
-
-.input-icon-wrapper {
-  position: relative;
-}
-
-.input-icon-wrapper i {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-}
-
-.input-icon-wrapper input {
-  width: 100%;
-  padding: 10px 12px 10px 38px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  transition: border-color var(--transition-fast);
-}
-
-.input-icon-wrapper input:focus {
-  outline: none;
-  border-color: var(--primary-brand);
+.profile-pic-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 8px;
+  border: 2px solid var(--border-color, #e0e0e0);
 }
 
 .helper-text {
@@ -1367,6 +1621,20 @@ ul {
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-brand);
+}
+
+.input-icon-wrapper input {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  transition: border-color var(--transition-fast);
+}
+
+.input-icon-wrapper input:focus {
   outline: none;
   border-color: var(--primary-brand);
 }
@@ -1499,6 +1767,137 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* ==========================================================================
+   DARK MODE — Additional overrides
+   ========================================================================== */
+[data-theme="dark"] .header-top {
+  background-color: var(--bg-card);
+}
+
+[data-theme="dark"] .location-picker {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300a29a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+[data-theme="dark"] .categories-nav {
+  background-color: var(--bg-card);
+}
+
+[data-theme="dark"] .btn-outline {
+  background-color: transparent;
+  color: var(--primary-brand-accent);
+  border-color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background-color: rgba(0, 162, 154, 0.1);
+}
+
+[data-theme="dark"] .btn-sell {
+  color: #0f1a1c;
+}
+
+[data-theme="dark"] .bubble-icon {
+  background-color: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .category-bubble.active .bubble-icon {
+  background-color: var(--primary-brand);
+  color: #0f1a1c;
+}
+
+[data-theme="dark"] .product-card-img {
+  background-color: var(--bg-input);
+}
+
+[data-theme="dark"] .like-btn:hover {
+  background-color: rgba(26, 42, 46, 0.9);
+}
+
+[data-theme="dark"] .product-gallery-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .gallery-thumbs {
+  background-color: var(--bg-input);
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .details-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .details-card h3 {
+  border-bottom-color: var(--border-color);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .spec-item {
+  background-color: var(--bg-input);
+}
+
+[data-theme="dark"] .price-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .price-card .price {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .price-card .location-date-footer {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .seller-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .seller-info h4 {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .phone-wrapper {
+  background-color: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .phone-wrapper:hover {
+  background-color: rgba(0, 162, 154, 0.1);
+}
+
+[data-theme="dark"] .seller-map-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .map-placeholder {
+  background-color: var(--bg-input);
+  background-image: radial-gradient(#2a3d42 2px, transparent 2px);
+  background-size: 16px 16px;
+}
+
+[data-theme="dark"] .map-placeholder i {
+  color: var(--primary-brand-accent);
+}
+
+[data-theme="dark"] .char-counter {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .profile-pic-preview {
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] #app-container {
+  background-color: var(--bg-main);
 }
 
 /* ==========================================================================

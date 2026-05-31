@@ -27,11 +27,10 @@ const CATEGORY_ICONS = {
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { showToast, openSellModal } = useAppContext();
+  const { showToast, openSellModal, refreshProducts } = useAppContext();
 
   const activeCategory = searchParams.get('category') || '';
   const activeQuery = searchParams.get('query') || '';
-  const activeLocation = searchParams.get('location') || 'New York, NY';
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -90,12 +89,12 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [activeQuery, activeCategory, limit, showToast]);
+  }, [activeQuery, activeCategory, limit, showToast, refreshProducts]);
 
   useEffect(() => {
     setSkip(0);
     fetchProducts(0, false);
-  }, [fetchProducts]);
+  }, [fetchProducts, refreshProducts]);
 
   const handleLoadMore = () => {
     const next = skip + limit;

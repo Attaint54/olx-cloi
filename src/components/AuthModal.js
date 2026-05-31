@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 
 export default function AuthModal() {
-  const { authModal, closeAuthModal, loginUser, registerUser } = useAppContext();
+  const { authModal, closeAuthModal, loginUser, registerUser, showToast } = useAppContext();
   const [activeTab, setActiveTab] = useState('login');
   
   // Login states
@@ -17,6 +17,8 @@ export default function AuthModal() {
   const [regUsername, setRegUsername] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
+  const [regProfilePic, setRegProfilePic] = useState(null);
+  const [regProfilePicPreview, setRegProfilePicPreview] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
   // Update active tab when context opens it with a specific default
@@ -38,7 +40,7 @@ export default function AuthModal() {
       setLoginUsername('');
       setLoginPassword('');
     } catch (error) {
-      alert(`Login Failed: ${error.message}`);
+      showToast(`Login Failed: ${error.message}`, 'error');
     } finally {
       setIsLoggingIn(false);
     }
@@ -48,19 +50,21 @@ export default function AuthModal() {
     e.preventDefault();
     if (isRegistering) return;
     if (regPassword.length < 6) {
-      alert('Password must be at least 6 characters long');
+      showToast('Password must be at least 6 characters long', 'warning');
       return;
     }
     setIsRegistering(true);
     try {
-      await registerUser(regName.trim(), regUsername.trim(), regEmail.trim(), regPassword);
+      await registerUser(regName.trim(), regUsername.trim(), regEmail.trim(), regPassword, regProfilePic);
       // Reset form
       setRegName('');
       setRegUsername('');
       setRegEmail('');
       setRegPassword('');
+      setRegProfilePic(null);
+      setRegProfilePicPreview('');
     } catch (error) {
-      alert(`Registration Failed: ${error.message}`);
+      showToast(`Registration Failed: ${error.message}`, 'error');
     } finally {
       setIsRegistering(false);
     }
@@ -181,6 +185,35 @@ export default function AuthModal() {
                   autoComplete="email"
                 />
               </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="signup-pic">Profile Picture</label>
+              <div className="file-input-wrapper">
+                <i className="fa-solid fa-image"></i>
+                <span className="file-input-text">Choose an image</span>
+                <input
+                  type="file"
+                  id="signup-pic"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setRegProfilePic(file);
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (ev) => setRegProfilePicPreview(ev.target.result);
+                      reader.readAsDataURL(file);
+                      e.target.previousElementSibling.textContent = file.name;
+                    } else {
+                      setRegProfilePicPreview('');
+                      e.target.previousElementSibling.textContent = 'Choose an image';
+                    }
+                  }}
+                />
+              </div>
+              {regProfilePicPreview && (
+                <img src={regProfilePicPreview} alt="Preview" className="profile-pic-preview" />
+              )}
             </div>
 
             <div className="form-group">
