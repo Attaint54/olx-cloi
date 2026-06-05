@@ -19,6 +19,7 @@ export default function AuthModal() {
   const [regPassword, setRegPassword] = useState('');
   const [regProfilePic, setRegProfilePic] = useState(null);
   const [regProfilePicPreview, setRegProfilePicPreview] = useState('');
+  const [fileName, setFileName] = useState('Choose an image');
   const [isRegistering, setIsRegistering] = useState(false);
 
   // Update active tab when context opens it with a specific default
@@ -63,6 +64,7 @@ export default function AuthModal() {
       setRegPassword('');
       setRegProfilePic(null);
       setRegProfilePicPreview('');
+      setFileName('Choose an image');
     } catch (error) {
       showToast(`Registration Failed: ${error.message}`, 'error');
     } finally {
@@ -191,7 +193,7 @@ export default function AuthModal() {
               <label htmlFor="signup-pic">Profile Picture</label>
               <div className="file-input-wrapper">
                 <i className="fa-solid fa-image"></i>
-                <span className="file-input-text">Choose an image</span>
+                <span className="file-input-text">{fileName}</span>
                 <input
                   type="file"
                   id="signup-pic"
@@ -203,10 +205,10 @@ export default function AuthModal() {
                       const reader = new FileReader();
                       reader.onload = (ev) => setRegProfilePicPreview(ev.target.result);
                       reader.readAsDataURL(file);
-                      e.target.previousElementSibling.textContent = file.name;
+                      setFileName(file.name);
                     } else {
                       setRegProfilePicPreview('');
-                      e.target.previousElementSibling.textContent = 'Choose an image';
+                      setFileName('Choose an image');
                     }
                   }}
                 />

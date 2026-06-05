@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3000';
+
 // Get current user from local storage
 export function getSavedSession() {
   if (typeof window === 'undefined') return null;
@@ -18,7 +20,7 @@ export const OLX_Auth = {
    */
   async login(username, password) {
     try {
-      const response = await axios.post('http://localhost:3000/login', {
+      const response = await axios.post(`${AUTH_URL}/login`, {
         username,
         password,
       }, {
@@ -60,7 +62,7 @@ export const OLX_Auth = {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/register', formData, {
+      const response = await axios.post(`${AUTH_URL}/register`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

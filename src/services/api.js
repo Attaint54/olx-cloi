@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// Create an Axios instance pointing to the base URL
-// To target your private backend, simply update this URL!
 const apiClient = axios.create({
-  baseURL: 'https://dummyjson.com',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://back-end-olx.vercel.app/',
   headers: {
     'Content-Type': 'application/json',
   },
