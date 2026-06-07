@@ -62,9 +62,7 @@ export const OLX_Auth = {
     }
 
     try {
-      const response = await axios.post(`${AUTH_URL}/register`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const response = await axios.post(`${AUTH_URL}/register`, formData);
 
       const data = response.data;
       const user = {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://back-end-olx.vercel.app/',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -153,7 +153,7 @@ export const OLX_API = {
 
       if (formData instanceof FormData) {
         const response = await apiClient.post('/products', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { 'Content-Type': null },
         });
         if (response.data?.thumbnail) {
           thumbnail = response.data.thumbnail;
