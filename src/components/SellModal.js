@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { OLX_API } from '../services/api';
 
@@ -10,10 +10,12 @@ export default function SellModal({ onProductAdded }) {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
-  const [image, setImage] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [location, setLocation] = useState('');
   const [desc, setDesc] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef(null);
 
   if (!sellModal.isOpen) return null;
 
@@ -23,24 +25,26 @@ export default function SellModal({ onProductAdded }) {
 
     setIsSubmitting(true);
     try {
-      const newProduct = {
-        title,
-        price: parseFloat(price),
-        category,
-        description: desc,
-        thumbnail: image.trim() || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800',
-        location: location.trim() || 'New York, NY',
-        sellerName: user?.name || 'You (Private Seller)',
-      };
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('price', price);
+      formData.append('category', category);
+      formData.append('description', desc);
+      formData.append('location', location.trim() || 'New York, NY');
+      formData.append('sellerName', user?.name || 'You (Private Seller)');
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
 
-      await OLX_API.createProduct(newProduct);
+      await OLX_API.createProduct(formData);
       showToast('Product Listing Created Successfully!', 'success');
       
       // Reset Form State
       setTitle('');
       setPrice('');
       setCategory('');
-      setImage('');
+      setImageFile(null);
+      setImagePreview('');
       setLocation('');
       setDesc('');
       
@@ -123,14 +127,32 @@ export default function SellModal({ onProductAdded }) {
             </div>
 
             <div className="form-group">
-              <label htmlFor="sell-image">Image URL</label>
+              <label htmlFor="sell-image">Product Image</label>
               <input 
-                type="url" 
+                type="file" 
                 id="sell-image" 
-                placeholder="Paste image link, or leave blank for a random mockup image"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                  }
+                }}
               />
+              {imagePreview && (
+                <div className="image-preview-wrapper">
+                  <img src={imagePreview} alt="Preview" className="image-preview" />
+                  <button type="button" className="image-preview-remove" onClick={() => {
+                    setImageFile(null);
+                    setImagePreview('');
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}>
+                    <i className="fa-solid fa-times"></i>
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="form-group">

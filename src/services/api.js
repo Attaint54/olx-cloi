@@ -147,27 +147,44 @@ export const OLX_API = {
    * Sends a POST request to add a new listing.
    * Simulates persistence in localstorage to display it in the app session.
    */
-  async createProduct(productData) {
+  async createProduct(formData) {
     try {
-      const response = await apiClient.post('/products/add', {
-        title: productData.title,
-        price: parseFloat(productData.price),
-        description: productData.description,
-        category: productData.category,
-        thumbnail: productData.thumbnail || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800',
-      });
+      let thumbnail = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800';
+
+      if (formData instanceof FormData) {
+        const response = await apiClient.post('/products', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        if (response.data?.thumbnail) {
+          thumbnail = response.data.thumbnail;
+        }
+      } else {
+        await apiClient.post('/products/add', {
+          title: formData.title,
+          price: parseFloat(formData.price),
+          description: formData.description,
+          category: formData.category,
+          thumbnail: formData.thumbnail || thumbnail,
+        });
+        if (formData.thumbnail) {
+          thumbnail = formData.thumbnail;
+        }
+      }
 
       const localId = `local_${Date.now()}`;
       const completedProduct = {
-        ...productData,
+        title: formData.get ? formData.get('title') : formData.title,
+        price: formData.get ? parseFloat(formData.get('price')) : parseFloat(formData.price),
+        description: formData.get ? formData.get('description') : formData.description,
+        category: formData.get ? formData.get('category') : formData.category,
+        location: formData.get ? formData.get('location') : (formData.location || 'New York, NY'),
+        sellerName: formData.get ? formData.get('sellerName') : (formData.sellerName || 'You (Private Seller)'),
         id: localId,
-        thumbnail: productData.thumbnail || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800',
-        images: [productData.thumbnail || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800'],
+        thumbnail,
+        images: [thumbnail],
         rating: 5.0,
         brand: 'Self Listed',
-        sellerName: productData.sellerName || 'You (Private Seller)',
         sellerPhone: '+1 (555) 777-8899',
-        location: productData.location || 'New York, NY',
         date: 'Today'
       };
 

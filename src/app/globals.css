@@ -1683,6 +1683,41 @@ ul {
   border-color: var(--primary-brand);
 }
 
+.image-preview-wrapper {
+  position: relative;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.image-preview-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-round);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.image-preview-remove:hover {
+  background: rgba(255, 0, 0, 0.8);
+}
+
 .char-counter {
   display: block;
   text-align: right;
