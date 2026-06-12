@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3000';
+const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL;
 
 // Get current user from local storage
 export function getSavedSession() {
