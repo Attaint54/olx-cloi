@@ -67,21 +67,14 @@ export default function Home() {
         skip: currentSkip
       });
 
-      let results = data.products;
-
-      if (currentSkip === 0 && !activeQuery && !activeCategory) {
-        const localProducts = JSON.parse(localStorage.getItem('olx_local_products') || '[]');
-        results = [...localProducts, ...results];
-      }
-
       if (append) {
-        setProducts(prev => [...prev, ...results]);
+        setProducts(prev => [...prev, ...data.products]);
       } else {
-        setProducts(results);
+        setProducts(data.products);
       }
 
       setTotal(data.total);
-      setHasMore(data.skip + data.limit < data.total);
+      setHasMore(currentSkip + limit < data.total);
 
     } catch (err) {
       console.error(err);

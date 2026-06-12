@@ -28,7 +28,9 @@ export function normalizeProduct(raw) {
   const daysAgo = numericId % 7;
   const postDate = daysAgo === 0 ? 'Today' : `${daysAgo} days ago`;
 
-  const images = raw.images && raw.images.length > 0 ? raw.images : [raw.thumbnail];
+  const images = (raw.images || []).filter(Boolean);
+  const validThumbnail = raw.thumbnail || images[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+  const displayImages = images.length > 0 ? images : [validThumbnail];
 
   return {
     id: raw.id,
@@ -40,8 +42,8 @@ export function normalizeProduct(raw) {
     stock: raw.stock || 10,
     brand: raw.brand || 'Generic',
     category: raw.category || 'general',
-    thumbnail: raw.thumbnail || (images[0] || 'https://via.placeholder.com/300x200?text=No+Image'),
-    images: images,
+    thumbnail: validThumbnail,
+    images: displayImages,
     location: location,
     date: postDate,
     seller: {
@@ -125,16 +127,6 @@ export const OLX_API = {
    */
   async getProductById(id) {
     try {
-      // 1. Check local storage for listings created in current browser session
-      if (typeof window !== 'undefined') {
-        const localProducts = JSON.parse(localStorage.getItem('olx_local_products') || '[]');
-        const foundLocal = localProducts.find(p => String(p.id) === String(id));
-        if (foundLocal) {
-          return normalizeProduct(foundLocal);
-        }
-      }
-
-      // 2. Fetch from DummyJSON API
       const response = await apiClient.get(`/products/${id}`);
       return normalizeProduct(response.data);
     } catch (error) {
@@ -145,56 +137,14 @@ export const OLX_API = {
 
   /**
    * Sends a POST request to add a new listing.
-   * Simulates persistence in localstorage to display it in the app session.
+   * Returns the normalized product from the backend response.
    */
   async createProduct(formData) {
     try {
-      let thumbnail = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800';
-
-      if (formData instanceof FormData) {
-        const response = await apiClient.post('/products', formData, {
-          headers: { 'Content-Type': null },
-        });
-        if (response.data?.thumbnail) {
-          thumbnail = response.data.thumbnail;
-        }
-      } else {
-        await apiClient.post('/products/add', {
-          title: formData.title,
-          price: parseFloat(formData.price),
-          description: formData.description,
-          category: formData.category,
-          thumbnail: formData.thumbnail || thumbnail,
-        });
-        if (formData.thumbnail) {
-          thumbnail = formData.thumbnail;
-        }
-      }
-
-      const localId = `local_${Date.now()}`;
-      const completedProduct = {
-        title: formData.get ? formData.get('title') : formData.title,
-        price: formData.get ? parseFloat(formData.get('price')) : parseFloat(formData.price),
-        description: formData.get ? formData.get('description') : formData.description,
-        category: formData.get ? formData.get('category') : formData.category,
-        location: formData.get ? formData.get('location') : (formData.location || 'New York, NY'),
-        sellerName: formData.get ? formData.get('sellerName') : (formData.sellerName || 'You (Private Seller)'),
-        id: localId,
-        thumbnail,
-        images: [thumbnail],
-        rating: 5.0,
-        brand: 'Self Listed',
-        sellerPhone: '+1 (555) 777-8899',
-        date: 'Today'
-      };
-
-      if (typeof window !== 'undefined') {
-        const localProducts = JSON.parse(localStorage.getItem('olx_local_products') || '[]');
-        localProducts.unshift(completedProduct);
-        localStorage.setItem('olx_local_products', JSON.stringify(localProducts));
-      }
-
-      return normalizeProduct(completedProduct);
+      const response = await apiClient.post('/products', formData, {
+        headers: { 'Content-Type': null },
+      });
+      return normalizeProduct(response.data);
     } catch (error) {
       console.error('Error posting product:', error);
       throw error;
