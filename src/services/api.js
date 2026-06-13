@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -13,13 +15,9 @@ const LOCATIONS = [
   'Dallas, TX', 'San Jose, CA', 'Austin, TX', 'Jacksonville, FL'
 ];
 
-/**
- * Maps raw data from the backend into a standardized frontend product model.
- */
 export function normalizeProduct(raw) {
   if (!raw) return null;
 
-  // Generate consistent location & date based on product ID
   const rawIdStr = String(raw.id);
   const numericId = parseInt(rawIdStr.replace('local_', '')) || 1;
   const locationIndex = numericId % LOCATIONS.length;
@@ -55,15 +53,15 @@ export function normalizeProduct(raw) {
 }
 
 export const OLX_API = {
-  /**
-   * Fetches all product categories
-   */
   async getCategories() {
+    if (!API_URL) {
+      console.warn('API_URL not configured, using fallback categories');
+      return getDefaultCategories();
+    }
     try {
       const response = await apiClient.get('/products/categories');
       const data = response.data;
       
-      // Handle array of strings or objects based on DummyJSON's format
       if (data.length > 0 && typeof data[0] === 'string') {
         return data.map(cat => ({
           slug: cat,
@@ -77,25 +75,15 @@ export const OLX_API = {
       }));
     } catch (error) {
       console.error('Error fetching categories:', error);
-      // Premium defaults fallback
-      return [
-        { slug: 'smartphones', name: 'Smartphones' },
-        { slug: 'laptops', name: 'Laptops' },
-        { slug: 'fragrances', name: 'Fragrances' },
-        { slug: 'skincare', name: 'Skincare' },
-        { slug: 'groceries', name: 'Groceries' },
-        { slug: 'home-decoration', name: 'Home Decoration' },
-        { slug: 'furniture', name: 'Furniture' },
-        { slug: 'automotive', name: 'Automotive' },
-        { slug: 'motorcycle', name: 'Motorcycles' }
-      ];
+      return getDefaultCategories();
     }
   },
 
-  /**
-   * Fetches products list by query, category, limit and skip parameters
-   */
   async getProducts({ query = '', category = '', limit = 20, skip = 0 } = {}) {
+    if (!API_URL) {
+      console.warn('API_URL not configured, returning empty products');
+      return { products: [], total: 0, skip: 0, limit };
+    }
     try {
       let endpoint = '/products';
       const params = { limit, skip };
@@ -122,10 +110,8 @@ export const OLX_API = {
     }
   },
 
-  /**
-   * Gets details of a single product
-   */
   async getProductById(id) {
+    if (!API_URL) return null;
     try {
       const response = await apiClient.get(`/products/${id}`);
       return normalizeProduct(response.data);
@@ -135,11 +121,10 @@ export const OLX_API = {
     }
   },
 
-  /**
-   * Sends a POST request to add a new listing.
-   * Returns the normalized product from the backend response.
-   */
   async createProduct(formData) {
+    if (!API_URL) {
+      throw new Error('API_URL is not configured. Set NEXT_PUBLIC_API_URL in your environment variables.');
+    }
     try {
       const response = await apiClient.post('/products', formData, {
         headers: { 'Content-Type': null },
@@ -151,3 +136,17 @@ export const OLX_API = {
     }
   }
 };
+
+function getDefaultCategories() {
+  return [
+    { slug: 'smartphones', name: 'Smartphones' },
+    { slug: 'laptops', name: 'Laptops' },
+    { slug: 'fragrances', name: 'Fragrances' },
+    { slug: 'skincare', name: 'Skincare' },
+    { slug: 'groceries', name: 'Groceries' },
+    { slug: 'home-decoration', name: 'Home Decoration' },
+    { slug: 'furniture', name: 'Furniture' },
+    { slug: 'automotive', name: 'Automotive' },
+    { slug: 'motorcycle', name: 'Motorcycles' }
+  ];
+}

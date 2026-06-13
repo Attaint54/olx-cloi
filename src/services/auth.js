@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL;
 
-// Get current user from local storage
 export function getSavedSession() {
   if (typeof window === 'undefined') return null;
   try {
@@ -15,10 +14,10 @@ export function getSavedSession() {
 }
 
 export const OLX_Auth = {
-  /**
-   * Logs in a user via backend
-   */
   async login(username, password) {
+    if (!AUTH_URL) {
+      throw new Error('AUTH_URL is not configured. Set NEXT_PUBLIC_AUTH_URL in your environment variables.');
+    }
     try {
       const response = await axios.post(`${AUTH_URL}/login`, {
         username,
@@ -43,15 +42,18 @@ export const OLX_Auth = {
       return user;
     } catch (error) {
       console.error('Auth Service Login Error:', error);
-      const errMsg = error.response?.data?.error || 'Invalid username or password';
+      if (!error.response) {
+        throw new Error('Network Error: Cannot reach the server. Check your connection or the API URL.');
+      }
+      const errMsg = error.response?.data?.message || error.response?.data?.error || 'Invalid username or password';
       throw new Error(errMsg);
     }
   },
 
-  /**
-   * Registers user via backend with Cloudinary image upload
-   */
   async register(name, username, email, password, profilePicFile = null) {
+    if (!AUTH_URL) {
+      throw new Error('AUTH_URL is not configured. Set NEXT_PUBLIC_AUTH_URL in your environment variables.');
+    }
     const formData = new FormData();
     formData.append('name', name);
     formData.append('username', username);
@@ -80,13 +82,13 @@ export const OLX_Auth = {
       return user;
     } catch (error) {
       console.error('Register error:', error.response?.data || error.message);
-      throw new Error(error.response?.data?.error || error.message);
+      if (!error.response) {
+        throw new Error('Network Error: Cannot reach the server. Check your connection or the API URL.');
+      }
+      throw new Error(error.response?.data?.message || error.response?.data?.error || error.message);
     }
   },
 
-  /**
-   * Sign out and clear cached credentials
-   */
   logout() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('olx_user_session');
