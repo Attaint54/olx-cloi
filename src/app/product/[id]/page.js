@@ -31,22 +31,26 @@ export default function ProductDetailPage({ params }) {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const detail = await OLX_API.getProductById(id);
-      if (detail) {
+      try {
+        const detail = await OLX_API.getProductById(id);
         setProduct(detail);
-        
+
         // Fetch related products
-        const relData = await OLX_API.getProducts({
-          category: detail.category,
-          limit: 5 // Fetch slightly more to filter out current
-        });
-        const filtered = relData.products.filter(p => String(p.id) !== String(detail.id)).slice(0, 4);
-        setRelatedProducts(filtered);
-      } else {
+        try {
+          const relData = await OLX_API.getProducts({
+            category: detail.category,
+            limit: 5
+          });
+          const filtered = relData.products.filter(p => String(p.id) !== String(detail.id)).slice(0, 4);
+          setRelatedProducts(filtered);
+        } catch (relErr) {
+          console.error('Error fetching related products:', relErr);
+        }
+      } catch (err) {
+        console.error('Error loading product:', err);
         setProduct(null);
       }
       setLoading(false);
-      // Reset image selector
       setActiveImageIdx(0);
       setPhoneRevealed(false);
     }

@@ -50,8 +50,12 @@ export default function Home() {
   // Load categories
   useEffect(() => {
     async function fetchCategories() {
-      const catList = await OLX_API.getCategories();
-      setCategories(catList);
+      try {
+        const catList = await OLX_API.getCategories();
+        setCategories(catList);
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
     }
     fetchCategories();
   }, []);

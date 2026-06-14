@@ -2,16 +2,21 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+if (!API_URL) {
+  throw new Error(
+    'NEXT_PUBLIC_API_URL is not configured. ' +
+    'Create a .env.local file with: NEXT_PUBLIC_API_URL=https://back-end-olx.vercel.app'
+  );
+}
+
 const apiClient = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 const LOCATIONS = [
-  'New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 
-  'Phoenix, AZ', 'Philadelphia, PA', 'San Antonio, TX', 'San Diego, CA', 
+  'New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX',
+  'Phoenix, AZ', 'Philadelphia, PA', 'San Antonio, TX', 'San Diego, CA',
   'Dallas, TX', 'San Jose, CA', 'Austin, TX', 'Jacksonville, FL'
 ];
 
@@ -22,7 +27,7 @@ export function normalizeProduct(raw) {
   const numericId = parseInt(rawIdStr.replace('local_', '')) || 1;
   const locationIndex = numericId % LOCATIONS.length;
   const location = raw.location || LOCATIONS[locationIndex];
-  
+
   const daysAgo = numericId % 7;
   const postDate = daysAgo === 0 ? 'Today' : `${daysAgo} days ago`;
 
@@ -54,36 +59,28 @@ export function normalizeProduct(raw) {
 
 export const OLX_API = {
   async getCategories() {
-    if (!API_URL) {
-      console.warn('API_URL not configured, using fallback categories');
-      return getDefaultCategories();
-    }
     try {
       const response = await apiClient.get('/products/categories');
       const data = response.data;
-      
-      if (data.length > 0 && typeof data[0] === 'string') {
+
+      if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'string') {
         return data.map(cat => ({
           slug: cat,
           name: cat.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
         }));
       }
-      
+
       return data.map(cat => ({
         slug: cat.slug || cat.name,
         name: cat.name
       }));
     } catch (error) {
       console.error('Error fetching categories:', error);
-      return getDefaultCategories();
+      throw error;
     }
   },
 
   async getProducts({ query = '', category = '', limit = 20, skip = 0 } = {}) {
-    if (!API_URL) {
-      console.warn('API_URL not configured, returning empty products');
-      return { products: [], total: 0, skip: 0, limit };
-    }
     try {
       let endpoint = '/products';
       const params = { limit, skip };
@@ -106,47 +103,29 @@ export const OLX_API = {
       };
     } catch (error) {
       console.error('Error fetching products:', error);
-      return { products: [], total: 0, skip: 0, limit };
+      throw error;
     }
   },
 
   async getProductById(id) {
-    if (!API_URL) return null;
     try {
       const response = await apiClient.get(`/products/${id}`);
       return normalizeProduct(response.data);
     } catch (error) {
       console.error(`Error fetching product details (${id}):`, error);
-      return null;
+      throw error;
     }
   },
 
   async createProduct(formData) {
-    if (!API_URL) {
-      throw new Error('API_URL is not configured. Set NEXT_PUBLIC_API_URL in your environment variables.');
-    }
     try {
       const response = await apiClient.post('/products', formData, {
         headers: { 'Content-Type': null },
       });
       return normalizeProduct(response.data);
     } catch (error) {
-      console.error('Error posting product:', error);
+      console.error('Error creating product:', error);
       throw error;
     }
   }
 };
-
-function getDefaultCategories() {
-  return [
-    { slug: 'smartphones', name: 'Smartphones' },
-    { slug: 'laptops', name: 'Laptops' },
-    { slug: 'fragrances', name: 'Fragrances' },
-    { slug: 'skincare', name: 'Skincare' },
-    { slug: 'groceries', name: 'Groceries' },
-    { slug: 'home-decoration', name: 'Home Decoration' },
-    { slug: 'furniture', name: 'Furniture' },
-    { slug: 'automotive', name: 'Automotive' },
-    { slug: 'motorcycle', name: 'Motorcycles' }
-  ];
-}
