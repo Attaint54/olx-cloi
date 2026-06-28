@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OLX_API } from '../services/api';
 import ProductCard from '../components/ProductCard';
+import HeroBackground from '../components/HeroBackground';
+import TiltCard from '../components/TiltCard';
 import { useAppContext } from '../context/AppContext';
 
 // FontAwesome icon maps for categories
@@ -131,6 +133,8 @@ export default function Home() {
     <div>
       {/* Hero Banner */}
       <div className="hero-banner">
+        <HeroBackground />
+        <div className="hero-overlay" />
         <div className="hero-text">
           <h1>Find everything you need</h1>
           <p>Buy and sell cars, electronics, furniture, and more in your area.</p>
@@ -234,7 +238,9 @@ export default function Home() {
           ) : (
             <div className="products-grid">
               {displayedProducts.map(p => (
-                <ProductCard key={p.id} product={p} />
+                <TiltCard key={p.id}>
+                  <ProductCard product={p} />
+                </TiltCard>
               ))}
             </div>
           )}
