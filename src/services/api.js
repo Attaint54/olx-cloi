@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+if (typeof window !== 'undefined') {
+  console.log('[API] Using API_URL:', API_URL);
+}
+
 if (!API_URL) {
   throw new Error(
     'NEXT_PUBLIC_API_URL is not configured. ' +
@@ -13,6 +17,31 @@ const apiClient = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
+
+apiClient.interceptors.request.use((config) => {
+  console.log(`[API] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.params || '');
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      console.error(`[API] ERROR ${error.config?.method?.toUpperCase()} ${error.config?.baseURL}${error.config?.url}:
+  Status: ${error.response.status}
+  Body: ${JSON.stringify(error.response.data).substring(0, 200)}
+  Origin: ${typeof window !== 'undefined' ? window.location.origin : 'server'}`);
+    } else if (error.request) {
+      console.error(`[API] NETWORK ERROR ${error.config?.method?.toUpperCase()} ${error.config?.baseURL}${error.config?.url}:
+  No response received - request was sent but no response came back
+  Origin: ${typeof window !== 'undefined' ? window.location.origin : 'server'}
+  Possible causes: CORS, DNS, network down, or server unreachable`);
+    } else {
+      console.error('[API] REQUEST SETUP ERROR:', error.message);
+    }
+    return Promise.reject(error);
+  }
+);
 
 const LOCATIONS = [
   'New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX',
@@ -55,6 +84,19 @@ export function normalizeProduct(raw) {
       phone: raw.sellerPhone || `+1 (555) ${100 + (numericId % 900)}-${1000 + (numericId % 9000)}`
     }
   };
+}
+
+let paymentAbortController = null;
+
+function getAuthHeaders() {
+  if (typeof window === 'undefined') return {};
+  try {
+    const session = JSON.parse(localStorage.getItem('olx_user_session') || 'null');
+    if (session && session.token) {
+      return { Authorization: `Bearer ${session.token}` };
+    }
+  } catch (_e) {}
+  return {};
 }
 
 export const OLX_API = {
@@ -126,6 +168,44 @@ export const OLX_API = {
     } catch (error) {
       console.error('Error creating product:', error);
       throw error;
+    }
+  },
+
+  async createCheckoutSession(productId) {
+    try {
+      const response = await apiClient.post('/payments/create-checkout-session',
+        { productId },
+        { headers: { ...apiClient.defaults.headers, ...getAuthHeaders() } }
+      );
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || 'Failed to create checkout session';
+      throw new Error(msg);
+    }
+  },
+
+  async getPaymentBySessionId(sessionId) {
+    try {
+      const response = await apiClient.get('/payments/payment', {
+        params: { session_id: sessionId },
+        headers: { ...apiClient.defaults.headers, ...getAuthHeaders() },
+      });
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || 'Failed to fetch payment details';
+      throw new Error(msg);
+    }
+  },
+
+  async getPaymentHistory() {
+    try {
+      const response = await apiClient.get('/payments/history', {
+        headers: { ...apiClient.defaults.headers, ...getAuthHeaders() },
+      });
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || 'Failed to fetch order history';
+      throw new Error(msg);
     }
   }
 };

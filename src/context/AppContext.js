@@ -11,6 +11,7 @@ export function AppProvider({ children }) {
   const [authModal, setAuthModal] = useState({ isOpen: false, defaultTab: 'login' });
   const [sellModal, setSellModal] = useState({ isOpen: false });
   const [toasts, setToasts] = useState([]);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('New York, NY');
   const [theme, setTheme] = useState('light');
@@ -107,6 +108,7 @@ export function AppProvider({ children }) {
         showToast,
         refreshProducts,
         theme, toggleTheme,
+        isProcessingPayment, setIsProcessingPayment,
         openAuthModal,
         closeAuthModal,
         openSellModal,

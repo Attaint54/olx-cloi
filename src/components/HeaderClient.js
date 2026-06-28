@@ -82,6 +82,9 @@ export default function HeaderClient() {
                   <div className="email">{user.email}</div>
                 </div>
                 <div className="user-dropdown-list">
+                  <Link href="/payment/history">
+                    <i className="fa-solid fa-receipt"></i> My Orders
+                  </Link>
                   <button className="logout-btn" onClick={logoutUser}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                   </button>

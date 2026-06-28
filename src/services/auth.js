@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL;
 
+if (typeof window !== 'undefined') {
+  console.log('[Auth] Using AUTH_URL:', AUTH_URL);
+}
+
 export function getSavedSession() {
   if (typeof window === 'undefined') return null;
   try {
@@ -18,6 +22,7 @@ export const OLX_Auth = {
     if (!AUTH_URL) {
       throw new Error('AUTH_URL is not configured. Set NEXT_PUBLIC_AUTH_URL in your environment variables.');
     }
+    console.log('[Auth] POST', `${AUTH_URL}/login`);
     try {
       const response = await axios.post(`${AUTH_URL}/login`, {
         username,
@@ -41,7 +46,12 @@ export const OLX_Auth = {
       }
       return user;
     } catch (error) {
-      console.error('Auth Service Login Error:', error);
+      console.error('[Auth] Login Error:', error.config?.url || AUTH_URL);
+      if (error.response) {
+        console.error('[Auth] Status:', error.response.status, 'Body:', JSON.stringify(error.response.data).substring(0, 200));
+      } else if (error.request) {
+        console.error('[Auth] Network Error - no response received');
+      }
       if (!error.response) {
         throw new Error('Network Error: Cannot reach the server. Check your connection or the API URL.');
       }
@@ -63,6 +73,7 @@ export const OLX_Auth = {
       formData.append('image', profilePicFile);
     }
 
+    console.log('[Auth] POST', `${AUTH_URL}/register`);
     try {
       const response = await axios.post(`${AUTH_URL}/register`, formData);
 
@@ -81,7 +92,12 @@ export const OLX_Auth = {
       }
       return user;
     } catch (error) {
-      console.error('Register error:', error.response?.data || error.message);
+      console.error('[Auth] Register Error:', error.config?.url || AUTH_URL);
+      if (error.response) {
+        console.error('[Auth] Status:', error.response.status, 'Body:', JSON.stringify(error.response.data).substring(0, 200));
+      } else if (error.request) {
+        console.error('[Auth] Network Error - no response received');
+      }
       if (!error.response) {
         throw new Error('Network Error: Cannot reach the server. Check your connection or the API URL.');
       }

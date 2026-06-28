@@ -10,7 +10,7 @@ import { useAppContext } from '../../../context/AppContext';
 export default function ProductDetailPage({ params }) {
   const router = useRouter();
   const { id } = params;
-  const { showToast } = useAppContext();
+  const { showToast, user, openAuthModal, isProcessingPayment, setIsProcessingPayment } = useAppContext();
 
   // Detail State variables
   const [product, setProduct] = useState(null);
@@ -218,6 +218,35 @@ export default function ProductDetailPage({ params }) {
             </div>
             
             <div className="title">{product.title}</div>
+
+            <button
+              className="btn btn-primary btn-block"
+              style={{ marginBottom: '12px' }}
+              onClick={async () => {
+                if (!user) {
+                  openAuthModal('login');
+                  return;
+                }
+                setIsProcessingPayment(true);
+                try {
+                  const data = await OLX_API.createCheckoutSession(product.id);
+                  if (data.url) {
+                    window.location.href = data.url;
+                  }
+                } catch (err) {
+                  showToast(err.message || 'Payment failed. Please try again.', 'error');
+                } finally {
+                  setIsProcessingPayment(false);
+                }
+              }}
+              disabled={isProcessingPayment}
+            >
+              {isProcessingPayment ? (
+                <><i className="fa-solid fa-spinner fa-spin"></i> Processing...</>
+              ) : (
+                <><i className="fa-solid fa-bolt"></i> Buy Now</>
+              )}
+            </button>
             
             <div className="location-date-footer">
               <span><i className="fa-solid fa-location-dot"></i> {product.location}</span>
